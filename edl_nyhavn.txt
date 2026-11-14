@@ -1,0 +1,2 @@
+# Nyhavn (IMG_0410) on its own: the first video's look, in slow motion, 3 bars at 96 BPM
+input/IMG_0410.mov  in=0.30  beats=12  zoom=in  speed=0.4

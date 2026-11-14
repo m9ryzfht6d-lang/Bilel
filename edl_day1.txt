@@ -1,14 +1,18 @@
-# Copenhagen - Day 1 reel. file  start  end  zoom  crop-centre
-input/dji_nyhavn.mp4        0.0  2.6  in   0.5   # hook: Nyhavn colours (title here)
-input/IMG_0432.mov          0.6  2.6  out  0.45  # Nyhavn crowd
-input/IMG_0431.mov          0.1  1.35 in   0.5   # Nyhavn vertical
-input/IMG_0438_kayak.jpg    0    2.2  in   0.5   # kayaks photo
-input/IMG_0387.mov          0.5  2.8  out  0.5   # rowing boat
-input/IMG_0389.mov          0.2  2.4  in   0.42  # backlit rowers
-input/IMG_0384.mov          0.3  2.5  out  0.5   # yellow harbour bus
-input/IMG_0386.mov          1.0  3.5  in   0.5   # rowers, big sky
-input/IMG_0439_street.jpg   0    2.2  out  0.5   # Christianshavn street photo
-input/IMG_0479.mov          1.0  4.0  in   0.5   # canal boats
-input/IMG_0463.mov          0.0  2.3  out  0.5   # harbour water
-input/IMG_0485.mov          0.5  3.0  in   0.5   # Cafe du Nord
-input/dji_tower.mp4         0.0  2.7  in   0.5   # walk + tilt up to the tower (ending)
+# Copenhagen - Day 1 reel. Music: 96 BPM, 1 beat = 0.625 s = 15 frames, 4 beats = 1 bar.
+# Intro (4 bars, calm): the first edit with its title, then Nyhavn in slow motion
+input/IMG_0485.mov          in=0.20 beats=8 zoom=in
+input/IMG_0410.mov          in=0.40 beats=8 zoom=out speed=0.4 trans=fade:16 label=Nyhavn
+# Drop at 10.0 s (8 bars with the beat): hard cuts on the beat
+input/dji_nyhavn.mp4        in=0.00 beats=4 zoom=punch trans=cut
+input/IMG_0432.mov          in=0.80 beats=2 zoom=in cx=0.5 trans=cut
+input/IMG_0431.mov          in=0.05 beats=2 zoom=out trans=cut
+input/IMG_0438_kayak.jpg            beats=4 zoom=in cx=0.45 trans=cut
+input/IMG_0387.mov          in=0.80 beats=2 zoom=out cx=0.62 trans=cut
+input/IMG_0389.mov          in=0.30 beats=2 zoom=in cx=0.25 trans=cut
+input/IMG_0384.mov          in=0.50 beats=4 zoom=out cx=0.45 trans=cut
+input/IMG_0386.mov          in=1.00 beats=2 zoom=in speed=0.4 trans=cut
+input/IMG_0439_street.jpg           beats=2 zoom=out cx=0.6 trans=cut
+input/IMG_0479.mov          in=1.00 beats=4 zoom=in trans=cut
+input/IMG_0463.mov          in=0.20 beats=4 zoom=out speed=0.4 trans=cut
+# Outro (1 bar): walk to the tower, the camera tilts up, fade out on the last chord
+input/dji_tower.mp4         in=0.00 beats=4 zoom=none cx=0.62 trans=fade:8
