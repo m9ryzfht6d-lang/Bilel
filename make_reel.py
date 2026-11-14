@@ -2,9 +2,11 @@
 """Build a vertical cinematic reel (1080x1920) from an edit list.
 
 Edit list format (one shot per line, '#' starts a comment):
-    input/clip.mov  START  END  [in|out]
-START/END are seconds in the source clip. The last column picks the slow
-zoom direction (default: alternate in/out).
+    input/clip.mov  START  END  [in|out]  [CX]
+START/END are seconds in the source clip (for a photo, END-START is how long
+it stays on screen). in/out picks the slow zoom direction (default: alternate).
+CX (0..1) is where to centre the 9:16 crop on a horizontal shot (default 0.5).
+iPhone HDR (HLG) clips are tone-mapped to SDR so they match the other shots.
 
 Usage:
     python3 make_reel.py edl.txt output/reel.mp4 --title COPENHAGEN --sub "DENMARK  ·  DAY 1"
@@ -33,34 +35,60 @@ def run(cmd):
     subprocess.run(cmd, check=True)
 
 
+IMAGE_EXT = (".jpg", ".jpeg", ".png", ".heic", ".webp")
+TONEMAP = ("zscale=t=linear:npl=100,format=gbrpf32le,zscale=p=bt709,"
+           "tonemap=hable:desat=0,zscale=t=bt709:m=bt709:r=tv,format=yuv420p,")
+
+
+def probe_video(path, entry):
+    return subprocess.run(
+        ["ffprobe", "-v", "error", "-select_streams", "v:0",
+         "-show_entries", f"stream={entry}", "-of", "csv=p=0", path],
+        capture_output=True, text=True).stdout.strip().strip(",")
+
+
 def has_audio(path):
+    """Index of the first decodable audio stream (iPhone files also carry
+    spatial-audio tracks ffmpeg can't decode), or None."""
     out = subprocess.run(
-        ["ffprobe", "-v", "error", "-select_streams", "a:0",
-         "-show_entries", "stream=index", "-of", "csv=p=0", path],
-        capture_output=True, text=True).stdout.strip()
-    return bool(out)
+        ["ffprobe", "-v", "error", "-select_streams", "a",
+         "-show_entries", "stream=index,codec_name", "-of", "csv=p=0", path],
+        capture_output=True, text=True).stdout.split()
+    for line in out:
+        idx, *codec = line.split(",")
+        if codec and codec[0] in ("aac", "mp3", "opus", "pcm_s16le", "alac", "ac3"):
+            return idx
+    return None
 
 
-def render_shot(src, start, end, zoom, out):
+def render_shot(src, start, end, zoom, cx, out):
     dur = end - start
     frames = round(dur * FPS)
     z = (f"1+0.08*on/{frames}" if zoom == "in"
          else f"1.08-0.08*on/{frames}")
+    is_img = src.lower().endswith(IMAGE_EXT)
+    hdr = (not is_img) and probe_video(src, "color_transfer") in ("arib-std-b67", "smpte2084")
     vf = (
-        f"fps={FPS},scale={2*W}:{2*H}:force_original_aspect_ratio=increase:flags=lanczos,"
-        f"crop={2*W}:{2*H},"
+        (TONEMAP if hdr else "")
+        + f"fps={FPS},scale={2*W}:{2*H}:force_original_aspect_ratio=increase:flags=lanczos,"
+        f"crop={2*W}:{2*H}:x='(iw-{2*W})*{cx}':y='(ih-{2*H})/2',"
         f"zoompan=z='{z}':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d=1:s={W}x{H}:fps={FPS},"
         f"{GRADE},format=yuv420p"
     )
-    cmd = ["ffmpeg", "-hide_banner", "-loglevel", "error", "-y",
-           "-ss", str(start), "-t", str(dur), "-i", src]
-    if not has_audio(src):
+    cmd = ["ffmpeg", "-hide_banner", "-loglevel", "error", "-y"]
+    if is_img:
+        cmd += ["-loop", "1", "-framerate", str(FPS), "-t", str(dur), "-i", src]
+    else:
+        cmd += ["-ss", str(start), "-t", str(dur), "-i", src]
+    aidx = None if is_img else has_audio(src)
+    if aidx is None:
         cmd += ["-f", "lavfi", "-t", str(dur), "-i", "anullsrc=r=48000:cl=stereo"]
         amap = "1:a"
     else:
-        amap = "0:a:0"
+        amap = f"0:{aidx}"
     cmd += ["-map", "0:v:0", "-map", amap, "-vf", vf,
             "-af", "aresample=48000,highpass=f=80",
+            "-t", str(dur),
             "-c:v", "libx264", "-preset", "medium", "-crf", "16",
             "-c:a", "pcm_s16le", "-ac", "2", out]
     run(cmd)
@@ -99,8 +127,9 @@ def main():
     parts, durs = [], []
     for i, s in enumerate(shots):
         zoom = s[3] if len(s) > 3 else ("in" if i % 2 == 0 else "out")
+        cx = float(s[4]) if len(s) > 4 else 0.5
         out = os.path.join(tmp, f"shot{i:02d}.mov")
-        durs.append(render_shot(s[0], float(s[1]), float(s[2]), zoom, out))
+        durs.append(render_shot(s[0], float(s[1]), float(s[2]), zoom, cx, out))
         parts.append(out)
         print(f"shot {i+1}/{len(shots)} done")
 
@@ -135,7 +164,7 @@ def main():
 
     run(["ffmpeg", "-hide_banner", "-loglevel", "error", "-y", *inputs,
          "-filter_complex", ";".join(fc), "-map", "[vout]", "-map", "[aout]",
-         "-c:v", "libx264", "-preset", "slow", "-crf", "18", "-profile:v", "high",
+         "-c:v", "libx264", "-preset", "slow", "-crf", "20", "-maxrate", "16M", "-bufsize", "32M", "-profile:v", "high",
          "-r", str(FPS), "-c:a", "aac", "-b:a", "192k", "-ar", "48000",
          "-movflags", "+faststart", args.out])
     print(f"done: {args.out} ({total:.1f}s)")
