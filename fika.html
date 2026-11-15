@@ -1,0 +1,338 @@
+<title>Fika السويدية</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Reem+Kufi:wght@500;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=Young+Serif&display=swap">
+<style>
+/* Layout: one narrow RTL reading column; full-width bands for the "rush" moment and the closing line */
+:root {
+  --bg: #EDF1F4;          /* cold Nordic morning */
+  --surface: #FFFFFF;
+  --fg: #1C2733;
+  --muted: #5A6878;
+  --coffee: #6B4226;
+  --crema: #C98B4F;
+  --saffron: #E3AE2F;     /* Swedish yellow / kanelbulle glaze */
+  --fjord: #2F5D8A;
+  --line: #D4DCE4;
+  --band: #1C2733;
+  --band-fg: #EDF1F4;
+  --font-display: "Reem Kufi", "IBM Plex Sans Arabic", system-ui, sans-serif;
+  --font-body: "IBM Plex Sans Arabic", "Segoe UI", Tahoma, system-ui, sans-serif;
+  --font-latin: "Young Serif", Georgia, "Times New Roman", serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0F1720; --surface: #172230; --fg: #E6ECF2; --muted: #9AA9B8;
+  --coffee: #D9A06B; --crema: #E0B07E; --saffron: #F0C04E; --fjord: #7FB0E0;
+  --line: #263445; --band: #E6ECF2; --band-fg: #0F1720; color-scheme: dark;
+} }
+:root[data-theme="dark"] {
+  --bg: #0F1720; --surface: #172230; --fg: #E6ECF2; --muted: #9AA9B8;
+  --coffee: #D9A06B; --crema: #E0B07E; --saffron: #F0C04E; --fjord: #7FB0E0;
+  --line: #263445; --band: #E6ECF2; --band-fg: #0F1720; color-scheme: dark;
+}
+
+body { background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 17px; line-height: 1.85; }
+.page { overflow-x: hidden; }
+.wrap { max-width: 680px; margin-inline: auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.lat { font-family: var(--font-latin); font-weight: 400; unicode-bidi: isolate; }
+h1, h2 { font-family: var(--font-display); text-wrap: balance; line-height: 1.35; margin: 0; }
+p { margin: 0; }
+.eyebrow { font-size: 13px; letter-spacing: .08em; color: var(--fjord); font-weight: 600; }
+
+/* ---------- Hero ---------- */
+.hero { padding-block: 56px 32px; display: grid; gap: 28px; justify-items: center; text-align: center; }
+.hero h1 { font-size: clamp(26px, 5.5vw, 38px); font-weight: 700; }
+.fika-word { font-family: var(--font-latin); font-size: clamp(84px, 20vw, 150px); line-height: 1; color: var(--coffee); letter-spacing: -.02em; display: inline-flex; direction: ltr; }
+.fika-word span { display: inline-block; animation: drop .9s cubic-bezier(.2,.9,.3,1.3) both; }
+.fika-word span:nth-child(2) { animation-delay: .08s } .fika-word span:nth-child(3) { animation-delay: .16s } .fika-word span:nth-child(4) { animation-delay: .24s }
+@keyframes drop { from { transform: translateY(-40px) rotate(-8deg); } to { transform: none; } }
+.pron { font-size: 14px; color: var(--muted); margin-top: -18px; }
+.pron b { font-family: var(--font-latin); font-weight: 400; color: var(--fg); }
+
+.scene { width: min(300px, 80vw); max-width: 100%; }
+.scene svg { width: 100%; height: auto; display: block; overflow: visible; }
+.steam path { fill: none; stroke: var(--muted); stroke-width: 4; stroke-linecap: round; opacity: .55; stroke-dasharray: 60 140; animation: steam 3.2s ease-in-out infinite; }
+.steam path:nth-child(2) { animation-delay: -1.1s } .steam path:nth-child(3) { animation-delay: -2.2s }
+@keyframes steam { 0% { stroke-dashoffset: 200; opacity: 0 } 30% { opacity: .6 } 100% { stroke-dashoffset: 0; opacity: 0 } }
+.coffee-fill { animation: pour 2.4s ease-out .4s both; transform-origin: 50% 100%; transform-box: fill-box; }
+@keyframes pour { from { transform: scaleY(.15) } to { transform: scaleY(1) } }
+.bun { animation: spin-in 1.4s cubic-bezier(.2,.8,.3,1.2) .9s both; transform-origin: center; transform-box: fill-box; }
+@keyframes spin-in { from { transform: translateX(60px) rotate(200deg) } to { transform: none } }
+
+/* ---------- Generic sections ---------- */
+section { padding-block: 44px; }
+.lead { font-size: clamp(20px, 4vw, 24px); font-weight: 500; line-height: 1.7; }
+.lead em { font-style: normal; color: var(--coffee); background: linear-gradient(transparent 62%, color-mix(in srgb, var(--saffron) 40%, transparent) 62%); padding-inline: 2px; }
+h2 { font-size: clamp(24px, 5vw, 32px); font-weight: 700; margin-block: 6px 16px; }
+.body p + p { margin-top: 14px; }
+.muted { color: var(--muted); }
+
+/* Three rituals */
+.trio { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 28px; }
+.ritual { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px 14px; text-align: center; display: grid; gap: 8px; justify-items: center; transition: transform .35s cubic-bezier(.2,.8,.3,1.3); }
+.ritual:hover { transform: translateY(-6px) rotate(-1.5deg); }
+.ritual svg { width: 56px; height: 56px; }
+.ritual h3 { margin: 0; font-family: var(--font-display); font-size: 18px; font-weight: 700; }
+.ritual small { font-size: 13px; color: var(--muted); line-height: 1.5; }
+.ritual small .lat { font-size: 14px; color: var(--coffee); }
+@media (max-width: 520px) { .trio { grid-template-columns: 1fr; } .ritual { grid-template-columns: 56px 1fr; text-align: start; justify-items: start; align-items: center; column-gap: 14px; } .ritual svg { grid-row: span 2; } }
+
+/* ---------- Rush band ---------- */
+.band { background: var(--band); color: var(--band-fg); padding-block: 48px; transition: background .8s; }
+.band .eyebrow { color: var(--saffron); }
+.band h2 { color: var(--band-fg); }
+.lanes { margin-block: 22px; display: grid; gap: 10px; direction: ltr; mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent); -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent); }
+.lane { display: flex; gap: 10px; white-space: nowrap; will-change: transform; }
+.chip { flex: none; direction: rtl; font-size: 14px; padding: 6px 14px; border-radius: 999px; border: 1px solid color-mix(in srgb, var(--band-fg) 30%, transparent); color: color-mix(in srgb, var(--band-fg) 85%, transparent); }
+.chip.hot { border-color: var(--saffron); color: var(--saffron); }
+.rush-row { display: flex; gap: 22px; align-items: center; flex-wrap: wrap; }
+.clock { width: 86px; height: 86px; flex: none; }
+.clock circle { fill: none; stroke: currentColor; stroke-width: 3; }
+.clock line { stroke: currentColor; stroke-linecap: round; }
+.clock .sec { stroke: var(--saffron); stroke-width: 2; }
+.rush-copy { flex: 1 1 260px; min-width: 0; }
+.btn { font: 600 17px var(--font-body); background: var(--saffron); color: #1C2733; border: 0; border-radius: 999px; padding: 12px 26px; cursor: pointer; display: inline-flex; gap: 10px; align-items: center; transition: transform .2s, box-shadow .2s; box-shadow: 0 0 0 0 color-mix(in srgb, var(--saffron) 60%, transparent); animation: pulse 2.2s infinite; }
+.btn:hover { transform: scale(1.04); }
+.btn:focus-visible { outline: 3px solid var(--fjord); outline-offset: 3px; }
+@keyframes pulse { 70% { box-shadow: 0 0 0 14px transparent } 100% { box-shadow: 0 0 0 0 transparent } }
+.band.calm .btn { animation: none; }
+.reveal-box { margin-top: 26px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.word { text-align: center; padding: 16px 8px; border-radius: 12px; background: color-mix(in srgb, var(--band-fg) 8%, transparent); font-family: var(--font-display); font-size: 20px; transition: transform .6s cubic-bezier(.2,.8,.3,1.4), background .6s, color .6s; }
+.word small { display: block; font-family: var(--font-body); font-size: 12px; opacity: .7; }
+.band.calm .word { background: var(--saffron); color: #1C2733; transform: translateY(-4px); }
+.band.calm .word:nth-child(2) { transition-delay: .15s } .band.calm .word:nth-child(3) { transition-delay: .3s }
+.status { font-size: 14px; margin-top: 12px; min-height: 1.8em; color: color-mix(in srgb, var(--band-fg) 75%, transparent); }
+
+/* ---------- Day timeline ---------- */
+.day-scroll { overflow-x: auto; margin-top: 24px; padding-bottom: 6px; }
+.day { min-width: 560px; direction: ltr; }
+.track { display: flex; height: 54px; border-radius: 10px; overflow: hidden; border: 1px solid var(--line); }
+.blk { display: grid; place-items: center; font-size: 13px; color: var(--muted); background: var(--surface); border-inline-end: 1px solid var(--line); direction: rtl; }
+.blk.fika { background: var(--saffron); color: #1C2733; font-weight: 600; position: relative; }
+.blk.fika::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,.45), transparent); transform: translateX(-100%); animation: shine 3s ease-in-out infinite; }
+@keyframes shine { 60%,100% { transform: translateX(100%) } }
+.blk.lunch { background: color-mix(in srgb, var(--fjord) 14%, var(--surface)); }
+.hours { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-top: 6px; font-variant-numeric: tabular-nums; }
+.note { font-size: 14px; color: var(--muted); margin-top: 14px; }
+
+/* Glossary */
+.gloss { display: grid; grid-template-columns: auto 1fr; gap: 10px 18px; margin-top: 20px; align-items: baseline; }
+.gloss dt { font-family: var(--font-latin); color: var(--coffee); font-size: 18px; direction: ltr; text-align: start; }
+.gloss dd { margin: 0; font-size: 15px; color: var(--muted); }
+
+/* ---------- Closing ---------- */
+.closing { padding-block: 64px 80px; text-align: center; }
+.closing blockquote { margin: 0; font-family: var(--font-display); font-size: clamp(26px, 6vw, 40px); line-height: 1.5; font-weight: 700; text-wrap: balance; }
+.closing blockquote .strike { position: relative; color: var(--muted); }
+.closing blockquote .strike::after { content: ""; position: absolute; inset-inline: -4px; top: 55%; height: 4px; border-radius: 2px; background: var(--coffee); transform-origin: right; transform: scaleX(0); transition: transform 1s cubic-bezier(.6,0,.2,1) .3s; }
+.closing.seen blockquote .strike::after { transform: scaleX(1); }
+.closing .sig { margin-top: 22px; font-family: var(--font-latin); color: var(--coffee); font-size: 22px; direction: ltr; }
+
+/* Scroll reveal: only elements below the fold at load get .pre */
+.rv { transition: transform .8s cubic-bezier(.2,.8,.3,1), opacity .8s; }
+.rv.pre { transform: translateY(28px); opacity: .001; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .rv.pre { transform: none; opacity: 1; }
+  .closing blockquote .strike::after { transform: scaleX(1); }
+}
+</style>
+
+<div class="page" dir="rtl" lang="aeb">
+
+  <header class="wrap hero">
+    <p class="eyebrow">ثقافة من السويد 🇸🇪</p>
+    <h1>عمركم سمعتوا بثقافة اسمها</h1>
+    <div class="fika-word" aria-label="Fika"><span>F</span><span>i</span><span>k</span><span>a</span></div>
+    <p class="pron">تتنطق <b>«فيكا»</b> · و تنجم تكون فعل: <b>att fika</b> يعني «نعملو فيكا»</p>
+
+    <div class="scene" aria-hidden="true">
+      <svg viewBox="0 0 300 220">
+        <defs>
+          <clipPath id="cupClip"><path d="M70 90 H200 L188 190 Q186 200 176 200 H94 Q84 200 82 190 Z"/></clipPath>
+        </defs>
+        <ellipse cx="150" cy="206" rx="120" ry="10" fill="var(--line)"/>
+        <g class="steam">
+          <path d="M110 80 C100 60 125 50 112 28 C104 14 118 6 114 -4"/>
+          <path d="M138 80 C128 58 152 48 140 24 C132 10 146 0 142 -10"/>
+          <path d="M166 80 C156 60 180 50 168 28 C160 14 174 6 170 -4"/>
+        </g>
+        <g clip-path="url(#cupClip)">
+          <rect x="60" y="90" width="150" height="120" fill="var(--surface)"/>
+          <rect class="coffee-fill" x="60" y="102" width="150" height="110" fill="var(--coffee)"/>
+          <ellipse cx="135" cy="104" rx="64" ry="5" fill="var(--crema)" opacity=".7"/>
+        </g>
+        <path d="M70 90 H200 L188 190 Q186 200 176 200 H94 Q84 200 82 190 Z" fill="none" stroke="var(--fg)" stroke-width="4" stroke-linejoin="round"/>
+        <path d="M198 108 Q232 108 228 138 Q224 162 192 160" fill="none" stroke="var(--fg)" stroke-width="4" stroke-linecap="round"/>
+        <g class="bun">
+          <circle cx="252" cy="182" r="30" fill="var(--crema)"/>
+          <path d="M252 182 m0 0 a5 5 0 0 1 8 2 a10 10 0 0 1 -14 8 a16 16 0 0 1 -6 -22 a22 22 0 0 1 30 -4" fill="none" stroke="var(--coffee)" stroke-width="4" stroke-linecap="round"/>
+          <circle cx="240" cy="168" r="2.2" fill="var(--surface)"/><circle cx="262" cy="165" r="2.2" fill="var(--surface)"/><circle cx="266" cy="190" r="2.2" fill="var(--surface)"/><circle cx="244" cy="198" r="2.2" fill="var(--surface)"/>
+        </g>
+      </svg>
+    </div>
+  </header>
+
+  <section class="wrap">
+    <p class="lead rv">في السويد، فما عادة يومية بسيطة، أما وراها <em>معنى كبير برشا</em>.</p>
+  </section>
+
+  <section class="wrap body">
+    <p class="eyebrow rv">شنوّة الـ <span class="lat">Fika</span>؟</p>
+    <h2 class="rv">توقف شوية… و تعيش اللحظة</h2>
+    <p class="rv">السويديين عندهم ثقافة اسمها <span class="lat">Fika</span>، وهي إنّك توقف شوية من خدمتك، من مشاغلك ومن الـ<span class="lat">rush</span> متاع النهار، وتاخذ وقت باش:</p>
+
+    <div class="trio">
+      <div class="ritual rv">
+        <svg viewBox="0 0 56 56" aria-hidden="true"><path d="M12 22 H40 L37 46 Q36 49 33 49 H19 Q16 49 15 46 Z" fill="var(--coffee)"/><path d="M40 27 Q49 27 47 35 Q45 41 38 40" fill="none" stroke="var(--coffee)" stroke-width="3"/><path d="M22 16 q-3 -5 1 -9 M30 16 q-3 -5 1 -9" fill="none" stroke="var(--muted)" stroke-width="2.4" stroke-linecap="round"/></svg>
+        <h3>تشرب قهوة</h3>
+        <small>السويديين من أكثر الشعوب اللي تشرب قهوة في الدنيا</small>
+      </div>
+      <div class="ritual rv">
+        <svg viewBox="0 0 56 56" aria-hidden="true"><circle cx="28" cy="30" r="20" fill="var(--crema)"/><path d="M28 30 a4 4 0 0 1 6 2 a8 8 0 0 1 -11 6 a13 13 0 0 1 -5 -17 a18 18 0 0 1 24 -3" fill="none" stroke="var(--coffee)" stroke-width="3" stroke-linecap="round"/></svg>
+        <h3>تاكل حاجة حلوة</h3>
+        <small>أشهرها <span class="lat">kanelbulle</span>، كعكة بالقرفة</small>
+      </div>
+      <div class="ritual rv">
+        <svg viewBox="0 0 56 56" aria-hidden="true"><path d="M6 14 h26 a4 4 0 0 1 4 4 v12 a4 4 0 0 1 -4 4 h-16 l-7 6 v-6 h-3 a4 4 0 0 1 -4 -4 v-12 a4 4 0 0 1 4 -4z" fill="var(--fjord)"/><path d="M24 26 h22 a4 4 0 0 1 4 4 v10 a4 4 0 0 1 -4 4 h-2 v6 l-7 -6 h-13 a4 4 0 0 1 -4 -4 v-10 a4 4 0 0 1 4 -4z" fill="var(--saffron)"/></svg>
+        <h3>تحكي مع الناس</h3>
+        <small>زملاء، صحاب، عايلة… اللي معاك</small>
+      </div>
+    </div>
+  </section>
+
+  <section class="band" id="rush">
+    <div class="wrap">
+      <p class="eyebrow">جرّب بروحك</p>
+      <h2>هذا هو الـ<span class="lat">rush</span> متاع النهار</h2>
+
+      <div class="lanes" aria-hidden="true">
+        <div class="lane" data-dir="1"></div>
+        <div class="lane" data-dir="-1"></div>
+      </div>
+
+      <div class="rush-row">
+        <svg class="clock" viewBox="0 0 86 86" aria-hidden="true">
+          <circle cx="43" cy="43" r="38"/>
+          <line id="hHand" x1="43" y1="43" x2="43" y2="24" stroke-width="4"/>
+          <line id="mHand" x1="43" y1="43" x2="43" y2="14" stroke-width="3"/>
+          <line id="sHand" class="sec" x1="43" y1="50" x2="43" y2="10"/>
+        </svg>
+        <div class="rush-copy">
+          <p style="margin-bottom:14px">المميّز إنّها موش مجرّد <span class="lat">pause</span> لقهوة. هي لحظة بعيدة على ضغط الوقت.</p>
+          <button class="btn" id="fikaBtn" type="button">☕ وقّف و خوذ <span class="lat">Fika</span></button>
+        </div>
+      </div>
+
+      <div class="reveal-box">
+        <div class="word">للتواصل<small>مع اللي حذاك</small></div>
+        <div class="word">للراحة<small>للمخ و للبدن</small></div>
+        <div class="word">للاستمتاع<small>بالحياة</small></div>
+      </div>
+      <p class="status" id="status" aria-live="polite">الساعة تجري، و المهام ما يوفاوش…</p>
+    </div>
+  </section>
+
+  <section class="wrap body">
+    <p class="eyebrow rv">نهار سويدي عادي</p>
+    <h2 class="rv">حتى في نهار معمّر، يلقاو وقت لبعضهم</h2>
+    <p class="rv">يعني حتى في وسط نهار معمّر بالخدمة والمسؤوليات، السويديين يلقاو وقت لبعضهم. برشا شركات تعمل <span class="lat">Fika</span> مرّتين في النهار:</p>
+
+    <div class="day-scroll rv">
+      <div class="day">
+        <div class="track">
+          <div class="blk" style="flex:2">خدمة</div>
+          <div class="blk fika" style="flex:.6">☕ فيكا</div>
+          <div class="blk" style="flex:1.4">خدمة</div>
+          <div class="blk lunch" style="flex:1">غداء</div>
+          <div class="blk" style="flex:2.4">خدمة</div>
+          <div class="blk fika" style="flex:.6">☕ فيكا</div>
+          <div class="blk" style="flex:1.6;border:0">خدمة</div>
+        </div>
+        <div class="hours"><span>08:00</span><span>10:00</span><span>12:00</span><span>15:00</span><span>17:00</span></div>
+      </div>
+    </div>
+    <p class="note rv">في برشا خدمات في السويد، الـ<span class="lat">Fika</span> موش رفاهية: تتحسب جزء من ثقافة الخدمة، و فما شكون يعتبرها تقوّي الفريق و تزيد في التركيز.</p>
+
+    <dl class="gloss rv">
+      <dt>fikapaus</dt><dd>استراحة الفيكا</dd>
+      <dt>fikarum</dt><dd>البيت اللي يتلمّو فيه في الخدمة باش يعملو فيكا</dd>
+      <dt>kanelbulle</dt><dd>كعكة القرفة، و عندها نهار خاص بيها: 4 أكتوبر</dd>
+    </dl>
+  </section>
+
+  <section class="closing" id="closing">
+    <div class="wrap">
+      <p class="eyebrow" style="margin-bottom:14px">الحاجة اللي تستحق نتعلّموها</p>
+      <blockquote>موش لازم <span class="strike">ديما نكونوا مشغولين</span><br>باش نحسّوا رواحنا عملوا في حاجة مهمّة.</blockquote>
+      <p class="sig">Ta en fika ☕</p>
+      <p class="muted" style="font-size:14px">«خوذ فيكا» بالسويدي</p>
+    </div>
+  </section>
+</div>
+
+<script>
+(function () {
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* Scroll reveal: mark only what starts below the fold */
+  var els = document.querySelectorAll('.rv');
+  var closing = document.getElementById('closing');
+  if ('IntersectionObserver' in window && !reduce) {
+    var vh = window.innerHeight;
+    els.forEach(function (el) { if (el.getBoundingClientRect().top > vh) el.classList.add('pre'); });
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { e.target.classList.remove('pre'); e.target.classList.add('seen'); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.15 });
+    els.forEach(function (el) { io.observe(el); });
+    io.observe(closing);
+  } else { closing.classList.add('seen'); }
+
+  /* Rush lanes */
+  var tasks = ['إيمايلات', 'réunion', 'deadline', 'تيليفون', 'rapport', 'زحمة', 'notification', 'قضيان', 'تقرير', 'urgent!', 'مسؤوليات', 'to-do', 'اجتماع', 'رسائل'];
+  var lanes = Array.prototype.slice.call(document.querySelectorAll('.lane'));
+  lanes.forEach(function (lane, i) {
+    var list = tasks.slice(i * 5).concat(tasks.slice(0, i * 5));
+    var html = '';
+    for (var r = 0; r < 3; r++) list.forEach(function (t, k) {
+      html += '<span class="chip' + ((k + r) % 4 === 0 ? ' hot' : '') + '">' + t + '</span>';
+    });
+    lane.innerHTML = html;
+  });
+
+  var speed = reduce ? 0 : 1, target = speed, offset = 0, t = 0, last = performance.now();
+  var sH = document.getElementById('sHand'), mH = document.getElementById('mHand'), hH = document.getElementById('hHand');
+  function frame(now) {
+    var dt = Math.min(50, now - last); last = now;
+    speed += (target - speed) * 0.025;
+    if (Math.abs(target - speed) < 0.002) speed = target;
+    offset += dt * 0.12 * speed;
+    t += dt * speed;
+    lanes.forEach(function (lane) {
+      var w = lane.scrollWidth / 3 || 1;
+      var x = (offset % w) * Number(lane.dataset.dir);
+      lane.style.transform = 'translateX(' + (lane.dataset.dir === '1' ? x - w : x) + 'px)';
+    });
+    sH.setAttribute('transform', 'rotate(' + (t * 0.36 % 360) + ' 43 43)');
+    mH.setAttribute('transform', 'rotate(' + (t * 0.03 % 360) + ' 43 43)');
+    hH.setAttribute('transform', 'rotate(' + (t * 0.0025 % 360) + ' 43 43)');
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+
+  var band = document.getElementById('rush'), btn = document.getElementById('fikaBtn'), status = document.getElementById('status');
+  var calm = false;
+  btn.addEventListener('click', function () {
+    calm = !calm;
+    band.classList.toggle('calm', calm);
+    target = calm || reduce ? 0 : 1;
+    btn.innerHTML = calm ? '↩ رجّع للخدمة' : '☕ وقّف و خوذ <span class="lat">Fika</span>';
+    status.textContent = calm
+      ? 'الوقت وقف شوية. قهوة، حاجة حلوة، و حكاية مع اللي معاك.'
+      : 'رجعنا للـ rush… أما بعد ما شحنت باتريّتك.';
+  });
+})();
+</script>
