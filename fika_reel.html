@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>Fika Reel</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Young+Serif&display=swap">
+<style>
+/* 1080x1920 stage. Every frame is drawn by render(t), so frames are exact. */
+:root {
+  --bg: #EDF1F4; --surface: #FFFFFF; --fg: #1C2733; --muted: #5A6878;
+  --coffee: #6B4226; --crema: #C98B4F; --saffron: #E3AE2F; --fjord: #2F5D8A; --line: #D4DCE4;
+  --night: #1C2733;
+  --d: "IBM Plex Sans Arabic", sans-serif;
+  --b: "IBM Plex Sans Arabic", sans-serif;
+  --l: "Young Serif", Georgia, serif;
+}
+html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; }
+body { background: var(--bg); color: var(--fg); font-family: var(--b); }
+#stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; }
+#bgNight { position: absolute; inset: 0; background: var(--night); opacity: 0; }
+.scene { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 48px; padding: 0 90px; text-align: center; opacity: 0; }
+.lat { font-family: var(--l); unicode-bidi: isolate; }
+.eyebrow { font-size: 36px; letter-spacing: .06em; color: var(--fjord); font-weight: 600; }
+.big { font-family: var(--d); font-weight: 700; font-size: 76px; line-height: 1.4; }
+.mid { font-family: var(--d); font-weight: 700; font-size: 62px; line-height: 1.5; }
+.txt { font-size: 46px; line-height: 1.7; font-weight: 500; }
+.fika { font-family: var(--l); font-size: 330px; line-height: 1; color: var(--coffee); direction: ltr; display: flex; }
+.fika span { display: inline-block; }
+.pron { font-size: 38px; color: var(--muted); }
+.pron b { font-family: var(--l); font-weight: 400; color: var(--fg); }
+.hl { position: relative; color: var(--coffee); display: inline-block; }
+.hl i { position: absolute; inset-inline: -6px; bottom: 12px; height: 26px; background: var(--saffron); opacity: .45; z-index: -1; transform-origin: right; transform: scaleX(0); }
+.cup { width: 760px; }
+.cup svg { width: 100%; height: auto; overflow: visible; display: block; }
+.cards { display: flex; flex-direction: column; gap: 34px; width: 860px; }
+.card { display: flex; align-items: center; gap: 40px; background: var(--surface); border: 2px solid var(--line); border-radius: 36px; padding: 36px 44px; text-align: start; }
+.card svg { width: 150px; height: 150px; flex: none; }
+.card h3 { margin: 0; font-family: var(--d); font-size: 58px; }
+.card p { margin: 6px 0 0; font-size: 32px; color: var(--muted); }
+.card p .lat { color: var(--coffee); }
+.lanes { position: absolute; inset: 210px 0 auto 0; display: flex; flex-direction: column; gap: 26px; direction: ltr; }
+.lane { display: flex; gap: 22px; white-space: nowrap; }
+.chip { flex: none; direction: rtl; font-size: 40px; padding: 14px 34px; border-radius: 999px; border: 2px solid rgba(237,241,244,.35); color: rgba(237,241,244,.9); }
+.chip.hot { border-color: var(--saffron); color: var(--saffron); }
+#s4 { justify-content: flex-end; padding-bottom: 210px; color: var(--bg); }
+#s4 .eyebrow { color: var(--saffron); }
+.clock { width: 230px; height: 230px; }
+.clock circle { fill: none; stroke: var(--bg); stroke-width: 3; }
+.clock line { stroke: var(--bg); stroke-linecap: round; }
+.btn { font: 600 46px var(--b); background: var(--saffron); color: var(--night); border-radius: 999px; padding: 26px 60px; position: relative; }
+.ripple { position: absolute; left: 50%; top: 50%; width: 120px; height: 120px; margin: -60px 0 0 -60px; border-radius: 50%; border: 6px solid var(--saffron); opacity: 0; }
+.words { display: flex; gap: 22px; width: 900px; }
+.word { flex: 1; padding: 30px 10px; border-radius: 28px; background: rgba(237,241,244,.1); font-family: var(--d); font-size: 46px; }
+.word small { display: block; font-family: var(--b); font-size: 26px; opacity: .75; margin-top: 4px; }
+.day { width: 900px; direction: ltr; }
+.track { display: flex; height: 140px; border-radius: 26px; overflow: hidden; border: 2px solid var(--line); background: var(--surface); }
+.blk { display: grid; place-items: center; font-size: 32px; color: var(--muted); border-inline-end: 2px solid var(--line); direction: rtl; overflow: hidden; white-space: nowrap; position: relative; }
+.blk.f { background: var(--saffron); color: var(--night); font-weight: 600; }
+.blk.f i { position: absolute; inset: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,.55), transparent); }
+.blk.lunch { background: #E3EAF2; }
+.hours { display: flex; justify-content: space-between; font-size: 30px; color: var(--muted); margin-top: 14px; font-variant-numeric: tabular-nums; }
+.quote { font-family: var(--d); font-weight: 700; font-size: 78px; line-height: 1.55; }
+.strike { position: relative; color: var(--muted); display: inline-block; }
+.strike i { position: absolute; inset-inline: -8px; top: 54%; height: 10px; border-radius: 5px; background: var(--coffee); transform-origin: right; transform: scaleX(0); }
+.sig { font-family: var(--l); font-size: 84px; color: var(--coffee); direction: ltr; }
+#fade { position: absolute; inset: 0; background: var(--bg); opacity: 0; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="bgNight"></div>
+
+  <!-- S1: question + Fika -->
+  <div class="scene" id="s1">
+    <div class="eyebrow" id="s1e">ثقافة من السويد</div>
+    <div class="big" id="s1q">عمركم سمعتوا بثقافة اسمها</div>
+    <div class="fika" id="fika"><span>F</span><span>i</span><span>k</span><span>a</span><span>?</span></div>
+    <div class="pron" id="s1p">تتنطق <b>«فيكا»</b></div>
+  </div>
+
+  <!-- S2: cup -->
+  <div class="scene" id="s2">
+    <div class="cup">
+      <svg viewBox="0 0 300 230">
+        <defs><clipPath id="cc"><path d="M70 90 H200 L188 190 Q186 200 176 200 H94 Q84 200 82 190 Z"/></clipPath></defs>
+        <ellipse cx="150" cy="208" rx="125" ry="10" fill="var(--line)"/>
+        <g id="steam" fill="none" stroke="var(--muted)" stroke-width="4" stroke-linecap="round">
+          <path d="M110 80 C100 60 125 50 112 28 C104 14 118 6 114 -4" pathLength="200" stroke-dasharray="60 140"/>
+          <path d="M138 80 C128 58 152 48 140 24 C132 10 146 0 142 -10" pathLength="200" stroke-dasharray="60 140"/>
+          <path d="M166 80 C156 60 180 50 168 28 C160 14 174 6 170 -4" pathLength="200" stroke-dasharray="60 140"/>
+        </g>
+        <g clip-path="url(#cc)">
+          <rect x="60" y="90" width="150" height="120" fill="var(--surface)"/>
+          <rect id="coffee" x="60" y="102" width="150" height="110" fill="var(--coffee)"/>
+        </g>
+        <path d="M70 90 H200 L188 190 Q186 200 176 200 H94 Q84 200 82 190 Z" fill="none" stroke="var(--fg)" stroke-width="4" stroke-linejoin="round"/>
+        <path d="M198 108 Q232 108 228 138 Q224 162 192 160" fill="none" stroke="var(--fg)" stroke-width="4" stroke-linecap="round"/>
+        <g id="bun">
+          <circle cx="252" cy="182" r="30" fill="var(--crema)"/>
+          <path d="M252 182 a5 5 0 0 1 8 2 a10 10 0 0 1 -14 8 a16 16 0 0 1 -6 -22 a22 22 0 0 1 30 -4" fill="none" stroke="var(--coffee)" stroke-width="4" stroke-linecap="round"/>
+          <circle cx="240" cy="168" r="2.2" fill="#fff"/><circle cx="262" cy="165" r="2.2" fill="#fff"/><circle cx="266" cy="190" r="2.2" fill="#fff"/><circle cx="244" cy="198" r="2.2" fill="#fff"/>
+        </g>
+      </svg>
+    </div>
+    <div class="txt" id="s2a">في السويد، فما عادة يومية بسيطة</div>
+    <div class="mid" id="s2b">أما وراها <span class="hl">معنى كبير برشا<i id="s2hl"></i></span></div>
+  </div>
+
+  <!-- S3: three rituals -->
+  <div class="scene" id="s3">
+    <div class="txt" id="s3h">توقف شوية من خدمتك ومن الـ<span class="lat">rush</span>،<br>وتاخذ وقت باش:</div>
+    <div class="cards">
+      <div class="card" id="c1">
+        <svg viewBox="0 0 56 56"><path d="M12 22 H40 L37 46 Q36 49 33 49 H19 Q16 49 15 46 Z" fill="var(--coffee)"/><path d="M40 27 Q49 27 47 35 Q45 41 38 40" fill="none" stroke="var(--coffee)" stroke-width="3"/><path d="M22 16 q-3 -5 1 -9 M30 16 q-3 -5 1 -9" fill="none" stroke="var(--muted)" stroke-width="2.4" stroke-linecap="round"/></svg>
+        <div><h3>تشرب قهوة</h3><p>شعب من أكثر الشعوب اللي تشرب قهوة</p></div>
+      </div>
+      <div class="card" id="c2">
+        <svg viewBox="0 0 56 56"><circle cx="28" cy="30" r="20" fill="var(--crema)"/><path d="M28 30 a4 4 0 0 1 6 2 a8 8 0 0 1 -11 6 a13 13 0 0 1 -5 -17 a18 18 0 0 1 24 -3" fill="none" stroke="var(--coffee)" stroke-width="3" stroke-linecap="round"/></svg>
+        <div><h3>تاكل حاجة حلوة</h3><p>كيما <span class="lat">kanelbulle</span>، كعكة بالقرفة</p></div>
+      </div>
+      <div class="card" id="c3">
+        <svg viewBox="0 0 56 56"><path d="M6 14 h26 a4 4 0 0 1 4 4 v12 a4 4 0 0 1 -4 4 h-16 l-7 6 v-6 h-3 a4 4 0 0 1 -4 -4 v-12 a4 4 0 0 1 4 -4z" fill="var(--fjord)"/><path d="M24 26 h22 a4 4 0 0 1 4 4 v10 a4 4 0 0 1 -4 4 h-2 v6 l-7 -6 h-13 a4 4 0 0 1 -4 -4 v-10 a4 4 0 0 1 4 -4z" fill="var(--saffron)"/></svg>
+        <div><h3>تحكي مع الناس</h3><p>اللي معاك</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S4: the rush, then the pause -->
+  <div class="scene" id="s4">
+    <div class="lanes" id="lanes">
+      <div class="lane" data-dir="1" data-k="1"></div>
+      <div class="lane" data-dir="-1" data-k="1.3"></div>
+      <div class="lane" data-dir="1" data-k="0.85"></div>
+      <div class="lane" data-dir="-1" data-k="1.15"></div>
+    </div>
+    <svg class="clock" viewBox="0 0 86 86">
+      <circle cx="43" cy="43" r="38"/>
+      <line id="hH" x1="43" y1="43" x2="43" y2="24" stroke-width="4"/>
+      <line id="mH" x1="43" y1="43" x2="43" y2="14" stroke-width="3"/>
+      <line id="sH" x1="43" y1="50" x2="43" y2="10" stroke-width="2" style="stroke:var(--saffron)"/>
+    </svg>
+    <div class="mid" id="s4t">هذا هو الـ<span class="lat">rush</span> متاع النهار</div>
+    <div class="btn" id="btn">وقّف و خوذ <span class="lat">Fika</span><div class="ripple" id="rip"></div></div>
+    <div class="txt" id="s4m" style="font-size:42px">موش مجرّد <span class="lat">pause</span> لقهوة، هي لحظة:</div>
+    <div class="words">
+      <div class="word" id="w1">للتواصل<small>مع اللي حذاك</small></div>
+      <div class="word" id="w2">للراحة<small>بعيد على الضغط</small></div>
+      <div class="word" id="w3">للاستمتاع<small>بالحياة</small></div>
+    </div>
+  </div>
+
+  <!-- S5: the day -->
+  <div class="scene" id="s5">
+    <div class="txt" id="s5a">حتى في وسط نهار معمّر<br>بالخدمة والمسؤوليات</div>
+    <div class="big" id="s5b" style="color:var(--coffee)">يلقاو وقت لبعضهم</div>
+    <div class="day" id="day">
+      <div class="track">
+        <div class="blk" data-f="2">خدمة</div>
+        <div class="blk f" data-f="0.75">فيكا<i></i></div>
+        <div class="blk" data-f="1.25">خدمة</div>
+        <div class="blk lunch" data-f="1">غداء</div>
+        <div class="blk" data-f="2.25">خدمة</div>
+        <div class="blk f" data-f="0.75">فيكا<i></i></div>
+        <div class="blk" data-f="1.5" style="border:0">خدمة</div>
+      </div>
+      <div class="hours"><span>08:00</span><span>10:00</span><span>12:00</span><span>15:00</span><span>17:00</span></div>
+    </div>
+  </div>
+
+  <!-- S6: the lesson -->
+  <div class="scene" id="s6">
+    <div class="eyebrow" id="s6e">الحاجة اللي تستحق نتعلّموها</div>
+    <div class="quote">
+      <div id="q1">موش لازم <span class="strike">ديما نكونوا مشغولين<i id="stk"></i></span></div>
+      <div id="q2">باش نحسّوا رواحنا عملوا<br>في حاجة مهمّة.</div>
+    </div>
+    <div class="sig" id="sig">Ta en fika</div>
+    <div class="pron" id="sigt">«خوذ فيكا» بالسويدي</div>
+  </div>
+
+  <div id="fade"></div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const cl = x => Math.max(0, Math.min(1, x));
+const p = (t, a, b) => cl((t - a) / (b - a));
+const oc = x => 1 - Math.pow(1 - x, 3);
+const io = x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+const ob = x => { const c1 = 1.9, c3 = c1 + 1; return x <= 0 ? 0 : 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2); };
+const scene = (t, a, b, f = .35) => Math.min(p(t, a, a + f), 1 - p(t, b - f, b));
+
+// Item enters: fade + rise with overshoot
+function enter(el, t, a, d = .6, dy = 60) {
+  const k = p(t, a, a + d);
+  el.style.opacity = oc(k);
+  el.style.transform = `translateY(${(1 - ob(k)) * dy}px)`;
+}
+
+// Chips
+const tasks = ['إيمايلات', 'réunion', 'deadline', 'تيليفون', 'rapport', 'زحمة', 'notification', 'قضيان', 'تقرير', 'urgent!', 'مسؤوليات', 'to-do', 'اجتماع', 'رسائل', 'factures'];
+const lanes = [...document.querySelectorAll('.lane')];
+lanes.forEach((lane, i) => {
+  const list = tasks.slice(i * 4).concat(tasks.slice(0, i * 4));
+  let h = '';
+  for (let r = 0; r < 3; r++) list.forEach((x, k) => h += `<span class="chip${(k + r + i) % 4 === 0 ? ' hot' : ''}">${x}</span>`);
+  lane.innerHTML = h;
+});
+let laneW = [];
+
+// Rush speed: full until the tap, eases to a stop. Integrated into a table.
+const TAP = 13.75, STOP = 15.2;
+const speedAt = t => t < TAP ? 1 : 1 - io(p(t, TAP, STOP));
+const dist = []; { let s = 0; for (let i = 0; i <= 3000; i++) { dist.push(s); s += speedAt(i / 100) * .01; } }
+const D = t => dist[Math.max(0, Math.min(3000, Math.round(t * 100)))];
+
+function render(t) {
+  // background night for the rush
+  $('bgNight').style.opacity = Math.min(p(t, 9.8, 10.2), 1 - p(t, 16.0, 16.5));
+
+  // S1 0–2.6
+  $('s1').style.opacity = scene(t, 0, 2.7, .3);
+  enter($('s1e'), t, .05, .5, 30);
+  enter($('s1q'), t, .2, .6);
+  [...$('fika').children].forEach((s, i) => {
+    const k = p(t, .7 + i * .12, 1.4 + i * .12);
+    s.style.opacity = cl(k * 3);
+    s.style.transform = `translateY(${(1 - ob(k)) * -160}px) rotate(${(1 - ob(k)) * -14}deg)`;
+  });
+  enter($('s1p'), t, 1.6, .5, 30);
+
+  // S2 2.5–6.3
+  $('s2').style.opacity = scene(t, 2.5, 6.35, .35);
+  const fill = .12 + .88 * oc(p(t, 2.7, 4.6));
+  $('coffee').setAttribute('transform', `translate(0 ${212 * (1 - fill)}) scale(1 ${fill})`);
+  [...$('steam').children].forEach((s, i) => {
+    const ph = ((t * .32 + i / 3) % 1);
+    s.setAttribute('stroke-dashoffset', 200 * (1 - ph));
+    s.setAttribute('opacity', (Math.sin(ph * Math.PI) * .6 * p(t, 3.0, 3.6)).toFixed(3));
+  });
+  const kb = ob(p(t, 3.4, 4.6));
+  $('bun').setAttribute('transform', `translate(${(1 - kb) * 90} 0) rotate(${(1 - kb) * 240} 252 182)`);
+  $('bun').setAttribute('opacity', cl(p(t, 3.4, 3.7)));
+  enter($('s2a'), t, 3.1);
+  enter($('s2b'), t, 4.1);
+  $('s2hl').style.transform = `scaleX(${oc(p(t, 4.6, 5.3))})`;
+
+  // S3 6.25–10
+  $('s3').style.opacity = scene(t, 6.25, 10.05, .35);
+  enter($('s3h'), t, 6.4);
+  ['c1', 'c2', 'c3'].forEach((id, i) => {
+    const k = p(t, 6.875 + i * .625, 7.475 + i * .625);
+    const el = $(id);
+    el.style.opacity = oc(k);
+    el.style.transform = `translateX(${(1 - oc(k)) * -140}px) scale(${.85 + .15 * ob(k)}) rotate(${(1 - ob(k)) * 3}deg)`;
+  });
+
+  // S4 10–16.3
+  $('s4').style.opacity = scene(t, 10, 16.35, .25);
+  const d = D(t) - D(10);
+  lanes.forEach((lane, i) => {
+    const w = laneW[i] || 1, dir = +lane.dataset.dir;
+    const x = ((d * 620 * lane.dataset.k) % w) * dir;
+    lane.style.transform = `translateX(${dir === 1 ? x - w : x}px)`;
+  });
+  const calm = p(t, TAP, STOP);
+  $('lanes').style.opacity = 1 - .65 * calm;
+  $('lanes').style.filter = `blur(${(1 - calm) * 1.5}px)`;
+  $('sH').setAttribute('transform', `rotate(${d * 720 % 360} 43 43)`);
+  $('mH').setAttribute('transform', `rotate(${d * 60 % 360} 43 43)`);
+  $('hH').setAttribute('transform', `rotate(${d * 5 % 360} 43 43)`);
+  enter($('s4t'), t, 10.15, .5);
+  enter($('btn'), t, 12.4, .5);
+  const press = Math.sin(p(t, TAP - .1, TAP + .25) * Math.PI);
+  $('btn').style.transform += ` scale(${1 - press * .1})`;
+  const rk = p(t, TAP, TAP + .9);
+  $('rip').style.opacity = rk > 0 && rk < 1 ? (1 - rk) : 0;
+  $('rip').style.transform = `scale(${1 + rk * 7})`;
+  enter($('s4m'), t, 14.3, .5, 30);
+  ['w1', 'w2', 'w3'].forEach((id, i) => {
+    const a = 15.0 + i * .3, k = p(t, a, a + .5), el = $(id);
+    enter(el, t, a - .25, .4, 40);
+    const on = oc(k);
+    el.style.background = `rgba(${Math.round(237 + (227 - 237) * on)},${Math.round(241 + (174 - 241) * on)},${Math.round(244 + (47 - 244) * on)},${.1 + .9 * on})`;
+    el.style.color = on > .5 ? 'var(--night)' : 'var(--bg)';
+  });
+
+  // S5 16.25–20
+  $('s5').style.opacity = scene(t, 16.3, 20.05, .35);
+  enter($('s5a'), t, 16.45);
+  enter($('s5b'), t, 17.1, .6, 70);
+  enter($('day'), t, 17.4, .5, 40);
+  const blks = [...document.querySelectorAll('#day .blk')];
+  blks.forEach((b, i) => {
+    const k = oc(p(t, 17.5 + i * .17, 17.95 + i * .17));
+    b.style.flex = `${b.dataset.f * k} 1 0`;
+    b.style.opacity = k;
+    const sh = b.querySelector('i');
+    if (sh) sh.style.transform = `translateX(${-100 + 200 * ((t * .55 + i * .2) % 1)}%)`;
+  });
+
+  // S6 20–25
+  $('s6').style.opacity = p(t, 20, 20.35);
+  enter($('s6e'), t, 20.1, .5, 30);
+  enter($('q1'), t, 20.4);
+  enter($('q2'), t, 20.95);
+  $('stk').style.transform = `scaleX(${io(p(t, 21.9, 22.7))})`;
+  enter($('sig'), t, 23.0, .7, 50);
+  enter($('sigt'), t, 23.3, .5, 30);
+  $('fade').style.opacity = io(p(t, 24.35, 25));
+}
+
+window.ready = document.fonts.ready.then(() => {
+  laneW = lanes.map(l => l.scrollWidth / 3);
+  render(0);
+});
+window.render = render;
+</script>
+</body>
+</html>
